@@ -1,0 +1,26 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <h1 class="fw-bold mb-4">Customer Queries</h1>
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light"><tr><th>Subject</th><th>Customer</th><th>Status</th><th>Date</th><th></th></tr></thead>
+                <tbody>
+                    {% for q in queries %}
+                    <tr>
+                        <td>{{ q.subject }}</td>
+                        <td>{{ q.customer.username }}</td>
+                        <td><span class="badge bg-{% if q.status == 'open' %}danger{% elif q.status == 'resolved' %}success{% else %}warning{% endif %}">{{ q.get_status_display }}</span></td>
+                        <td>{{ q.created_at|date:"M d, H:i" }}</td>
+                        <td><a href="{% url 'shop:admin_query_detail' q.pk %}" class="btn btn-sm btn-primary">Respond</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted">No queries</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

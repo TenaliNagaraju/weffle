@@ -1,0 +1,55 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <h1 class="fw-bold mb-4">Admin Dashboard</h1>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3"><div class="admin-stat"><h3>{{ analytics.orders_placed }}</h3><p>Orders Today</p></div></div>
+        <div class="col-md-3"><div class="admin-stat stat-red"><h3>{{ analytics.orders_cancelled }}</h3><p>Cancelled Today</p></div></div>
+        <div class="col-md-3"><div class="admin-stat stat-green"><h3>{{ CURRENCY }}{{ analytics.revenue }}</h3><p>Revenue Today</p></div></div>
+        <div class="col-md-3"><div class="admin-stat stat-blue"><h3>{{ pending_orders }}</h3><p>Pending Orders</p></div></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold">Recent Orders</div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead><tr><th>Order</th><th>Customer</th><th>Status</th><th>Total</th><th></th></tr></thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>{{ order.order_number }}</td>
+                                <td>{{ order.customer.username }}</td>
+                                <td><span class="badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                                <td>{{ CURRENCY }}{{ order.total_amount }}</td>
+                                <td><a href="{% url 'shop:admin_order_detail' order.pk %}" class="btn btn-sm btn-primary">Manage</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-muted text-center">No orders yet</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">🎯 Production Recommendations</div>
+                <div class="card-body">
+                    <p class="text-muted small">Based on last 7 days — make more of these:</p>
+                    {% for item in recommendations %}
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span>{{ item.item_name }} ({{ item.variant_name }})</span>
+                        <span class="badge bg-warning text-dark">{{ item.total_qty }} sold</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No data yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

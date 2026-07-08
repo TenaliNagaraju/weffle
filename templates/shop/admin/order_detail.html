@@ -1,0 +1,50 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <h1 class="fw-bold mb-4">Order {{ order.order_number }}</h1>
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold">Order Items</div>
+                <div class="card-body">
+                    {% for item in order.items.all %}
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span>{{ item.quantity }}x {{ item.item_name }} ({{ item.variant_name }})</span>
+                        <span>{{ CURRENCY }}{{ item.subtotal }}</span>
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex justify-content-between fw-bold mt-3">
+                        <span>Total</span><span>{{ CURRENCY }}{{ order.total_amount }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Customer Info</div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ order.customer.get_full_name|default:order.customer.username }}</p>
+                    <p><strong>Phone:</strong> {{ order.delivery_phone }}</p>
+                    <p><strong>Address:</strong> {{ order.delivery_address }}</p>
+                    {% if order.notes %}<p><strong>Notes:</strong> {{ order.notes }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Update Status</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-weffle w-100">Update Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

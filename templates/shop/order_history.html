@@ -1,0 +1,33 @@
+{% extends 'shop/base.html' %}
+{% block title %}Order History — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <h1 class="fw-bold mb-4" data-aos="fade-up"><i class="bi bi-clock-history"></i> Order History</h1>
+    {% if orders %}
+    <div class="card shadow-sm border-0" data-aos="fade-up">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light"><tr><th>Order #</th><th>Date</th><th>Status</th><th>Total</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td class="fw-medium">{{ order.order_number }}</td>
+                        <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                        <td><span class="badge status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                        <td>{{ CURRENCY }}{{ order.total_amount }}</td>
+                        <td>
+                            <a href="{% url 'shop:order_detail' order.pk %}" class="btn btn-sm btn-outline-primary">Details</a>
+                            <a href="{% url 'shop:track_order' order.pk %}" class="btn btn-sm btn-outline-secondary">Track</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5"><p class="text-muted">No orders yet.</p><a href="{% url 'shop:menu' %}" class="btn btn-weffle">Order Now</a></div>
+    {% endif %}
+</div>
+{% endblock %}

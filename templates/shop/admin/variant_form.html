@@ -1,0 +1,57 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <h1 class="fw-bold mb-4">Variants — {{ item.name }}</h1>
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Add / Edit Variant</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="variant_id" id="variant_id" value="">
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-weffle">Save Variant</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Existing Variants</div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead><tr><th>Shape</th><th>Price</th><th>Available</th><th></th></tr></thead>
+                        <tbody>
+                            {% for v in variants %}
+                            <tr>
+                                <td>{{ v.get_shape_display }}</td>
+                                <td>{% if v.price %}{{ CURRENCY }}{{ v.price }}{% else %}{{ v.price_label|default:"—" }}{% endif %}</td>
+                                <td>{% if v.is_available %}Yes{% else %}No{% endif %}</td>
+                                <td><button class="btn btn-sm btn-outline-primary" onclick="editVariant({{ v.id }}, '{{ v.shape }}', '{{ v.price|default:"" }}', '{{ v.price_label }}', {{ v.is_available|yesno:"true,false" }})">Edit</button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block admin_js %}
+<script>
+function editVariant(id, shape, price, label, available) {
+    document.getElementById('variant_id').value = id;
+    document.getElementById('id_shape').value = shape;
+    document.getElementById('id_price').value = price;
+    document.getElementById('id_price_label').value = label;
+    document.getElementById('id_is_available').checked = available;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <div class="d-flex justify-content-between mb-4">
+        <h1 class="fw-bold mb-0">Delivery Agents</h1>
+        <a href="{% url 'shop:admin_delivery_create' %}" class="btn btn-weffle">Add Agent</a>
+    </div>
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead class="table-light"><tr><th>Name</th><th>Phone</th><th>Vehicle</th><th>Active</th></tr></thead>
+                <tbody>
+                    {% for agent in agents %}
+                    <tr>
+                        <td>{{ agent.user.get_full_name|default:agent.user.username }}</td>
+                        <td>{{ agent.phone }}</td>
+                        <td>{{ agent.vehicle_info|default:"—" }}</td>
+                        <td>{% if agent.is_active %}<span class="text-success">Active</span>{% else %}Inactive{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted">No delivery agents</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

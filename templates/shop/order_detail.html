@@ -1,0 +1,53 @@
+{% extends 'shop/base.html' %}
+{% block title %}Order {{ order.order_number }} — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8" data-aos="fade-up">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h2 class="fw-bold">{{ order.order_number }}</h2>
+                            <span class="badge status-{{ order.status }} fs-6">{{ order.get_status_display }}</span>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold fs-4 text-weffle">{{ CURRENCY }}{{ order.total_amount }}</div>
+                            <small class="text-muted">{{ order.created_at|date:"M d, Y H:i" }}</small>
+                        </div>
+                    </div>
+
+                    <div class="order-tracker mb-4">
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {% widthratio order.status_progress 6 100 %}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted mt-1">
+                            <span>Placed</span><span>Ready</span><span>Delivered</span>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mb-3">Items</h5>
+                    {% for item in order.items.all %}
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span>{{ item.quantity }}x {{ item.item_name }} ({{ item.variant_name }})</span>
+                        <span>{{ CURRENCY }}{{ item.subtotal }}</span>
+                    </div>
+                    {% endfor %}
+
+                    <div class="mt-4 d-flex flex-wrap gap-2">
+                        <a href="{% url 'shop:track_order' order.pk %}" class="btn btn-weffle"><i class="bi bi-geo-alt"></i> Track Order</a>
+                        {% if order.can_cancel %}
+                        <form method="post" action="{% url 'shop:cancel_order' order.pk %}" class="d-inline" onsubmit="return confirm('Cancel this order?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">Cancel Order</button>
+                        </form>
+                        {% endif %}
+                        <a href="{% url 'shop:order_history' %}" class="btn btn-outline-secondary">All Orders</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

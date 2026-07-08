@@ -1,0 +1,55 @@
+{% extends 'shop/base.html' %}
+{% block title %}Menu — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h1 class="fw-bold display-5">Our Menu 🧇</h1>
+        <p class="text-muted lead">Choose your flavor & shape — add to cart & checkout!</p>
+    </div>
+
+    {% for category in categories %}
+    <section class="mb-5" data-aos="fade-up">
+        <h2 class="category-title mb-4">{{ category.name }}</h2>
+        <div class="row g-4">
+            {% for item in category.items.all %}
+            {% if item.is_available %}
+            <div class="col-lg-6">
+                <div class="menu-item-card">
+                    <div class="d-flex gap-3">
+                        <div class="menu-thumb">🧇</div>
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-1">{{ item.name }}</h5>
+                            <div class="variants-grid">
+                                {% for variant in item.variants.all %}
+                                {% if variant.is_available %}
+                                <div class="variant-row d-flex justify-content-between align-items-center">
+                                    <span class="variant-name">{{ variant.get_shape_display }}</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if variant.price %}
+                                        <span class="price-tag">{{ CURRENCY }}{{ variant.price }}</span>
+                                        <form method="post" action="{% url 'shop:add_to_cart' %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="variant_id" value="{{ variant.id }}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-weffle btn-sm"><i class="bi bi-plus-lg"></i> Add</button>
+                                        </form>
+                                        {% else %}
+                                        <span class="text-muted small">{{ variant.display_price }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+</div>
+{% endblock %}

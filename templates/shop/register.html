@@ -1,0 +1,32 @@
+{% extends 'shop/base.html' %}
+{% block title %}Register — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="auth-page min-vh-100 d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5" data-aos="fade-up">
+                <div class="auth-card p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <span class="auth-icon">🧇</span>
+                        <h2 class="fw-bold">Create Account</h2>
+                        <p class="text-muted">Join {{ SITE_NAME }} and start ordering</p>
+                    </div>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<div class="text-danger small">{{ field.errors.0 }}</div>{% endif %}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-weffle w-100 py-2 mt-2">Register</button>
+                    </form>
+                    <p class="text-center mt-4 mb-0">Already have an account? <a href="{% url 'shop:login' %}" class="fw-semibold">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

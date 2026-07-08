@@ -1,0 +1,78 @@
+{% extends 'shop/base.html' %}
+{% block title %}Welcome — {{ SITE_NAME }}{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<section class="hero-section d-flex align-items-center min-vh-100">
+    <div class="hero-bg"></div>
+    <div class="container position-relative z-1">
+        <div class="row align-items-center">
+            <div class="col-lg-7 text-white" data-aos="fade-right">
+                <span class="badge bg-warning text-dark mb-3 px-3 py-2">Fresh & Hot Daily</span>
+                <h1 class="display-3 fw-bold mb-3">Crispy Weffles<br><span class="text-warning">Made With Love</span></h1>
+                <p class="lead mb-4 opacity-90">Order your favorite flavors — Dark Fantasy, Lotus Biscoff, Triple Chocolate & more. Delivered hot to your door.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'shop:register' %}" class="btn btn-weffle btn-lg px-4">Get Started <i class="bi bi-arrow-right"></i></a>
+                    <a href="{% url 'shop:login' %}" class="btn btn-outline-light btn-lg px-4">Login</a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
+                <div class="hero-waffle float-animation">🧇</div>
+                <p class="text-white mt-3 fw-semibold">Starting at {{ CURRENCY }}39</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5" data-aos="fade-up">Why Choose {{ SITE_NAME }}?</h2>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon">⚡</div>
+                    <h5>Real-Time Tracking</h5>
+                    <p class="text-muted mb-0">Track your order from kitchen to doorstep with live updates.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon">🎯</div>
+                    <h5>16+ Flavors</h5>
+                    <p class="text-muted mb-0">Square Puff, Stick, Triangle — pick your perfect shape.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-card text-center p-4 h-100">
+                    <div class="feature-icon">🔒</div>
+                    <h5>Secure Ordering</h5>
+                    <p class="text-muted mb-0">Your data is protected with industry-standard security.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if featured %}
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5" data-aos="fade-up">Popular Picks</h2>
+        <div class="row g-4">
+            {% for item in featured %}
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="menu-card h-100">
+                    <div class="menu-card-img">🧇</div>
+                    <div class="menu-card-body">
+                        <h5>{{ item.name }}</h5>
+                        <p class="text-muted small">{{ item.description|default:"Delicious weffle" }}</p>
+                        {% if item.min_price %}<span class="price-tag">From {{ CURRENCY }}{{ item.min_price }}</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

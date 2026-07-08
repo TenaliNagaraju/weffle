@@ -1,0 +1,61 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <h1 class="fw-bold mb-4">Analytics</h1>
+    <div class="row g-4 mb-4">
+        <div class="col-md-3"><div class="admin-stat"><h3>{{ today.orders_placed }}</h3><p>Orders Today</p></div></div>
+        <div class="col-md-3"><div class="admin-stat stat-red"><h3>{{ today.orders_cancelled }}</h3><p>Cancelled</p></div></div>
+        <div class="col-md-3"><div class="admin-stat stat-green"><h3>{{ CURRENCY }}{{ today.revenue }}</h3><p>Revenue</p></div></div>
+        <div class="col-md-3"><div class="admin-stat stat-blue"><h3>{{ today.top_items|length }}</h3><p>Top Items</p></div></div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">7-Day Trend</div>
+                <div class="card-body">
+                    <table class="table mb-0">
+                        <thead><tr><th>Date</th><th>Orders</th><th>Revenue</th></tr></thead>
+                        <tbody>
+                            {% for day in week %}
+                            <tr>
+                                <td>{{ day.day }}</td>
+                                <td>{{ day.orders }}</td>
+                                <td>{{ CURRENCY }}{{ day.revenue|default:0 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-muted">No data</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Top Selling Items Today</div>
+                <div class="card-body">
+                    {% for item in today.top_items %}
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span>{{ item.item_name }} ({{ item.variant_name }})</span>
+                        <span><strong>{{ item.qty }}</strong> sold — {{ CURRENCY }}{{ item.revenue }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No sales today</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header bg-white fw-bold">Production Recommendations (7 days)</div>
+                <div class="card-body">
+                    {% for item in recommendations %}
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span>{{ item.item_name }} ({{ item.variant_name }})</span>
+                        <span class="badge bg-warning text-dark">{{ item.total_qty }} units</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

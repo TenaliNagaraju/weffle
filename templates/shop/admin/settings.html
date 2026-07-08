@@ -1,0 +1,47 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <h1 class="fw-bold mb-4">Settings</h1>
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Change Admin Password</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="password">
+                        {% for field in pw_form %}
+                        <div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}</div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-weffle">Update Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Site Settings (No Code Changes Needed)</div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="setting">
+                        {% for field in setting_form %}
+                        <div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}</div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-weffle">Save Setting</button>
+                    </form>
+                    <hr>
+                    <h6>Current Settings</h6>
+                    {% for s in settings_list %}
+                    <div class="d-flex justify-content-between py-1 border-bottom small">
+                        <span><strong>{{ s.key }}</strong>: {{ s.value }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted small">No custom settings yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

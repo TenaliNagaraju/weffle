@@ -1,0 +1,38 @@
+{% extends 'shop/admin/base_admin.html' %}
+{% block admin_content %}
+<div class="p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold mb-0">Menu Management</h1>
+        <a href="{% url 'shop:admin_menu_create' %}" class="btn btn-weffle"><i class="bi bi-plus"></i> Add Item</a>
+    </div>
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light"><tr><th>Name</th><th>Category</th><th>Variants</th><th>Available</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td class="fw-medium">{{ item.name }}</td>
+                        <td>{{ item.category.name }}</td>
+                        <td>
+                            {% for v in item.variants.all %}
+                            <span class="badge bg-light text-dark me-1">{{ v.get_shape_display }}: {% if v.price %}{{ CURRENCY }}{{ v.price }}{% else %}{{ v.price_label }}{% endif %}</span>
+                            {% endfor %}
+                        </td>
+                        <td>{% if item.is_available %}<span class="text-success">✓</span>{% else %}<span class="text-danger">✗</span>{% endif %}</td>
+                        <td>
+                            <a href="{% url 'shop:admin_menu_edit' item.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="{% url 'shop:admin_variant_edit' item.pk %}" class="btn btn-sm btn-outline-secondary">Prices</a>
+                            <form method="post" action="{% url 'shop:admin_menu_delete' item.pk %}" class="d-inline" onsubmit="return confirm('Delete this item?')">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

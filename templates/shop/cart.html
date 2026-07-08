@@ -1,0 +1,54 @@
+{% extends 'shop/base.html' %}
+{% block title %}Cart — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <h1 class="fw-bold mb-4" data-aos="fade-up"><i class="bi bi-cart3"></i> Your Cart</h1>
+    {% if items %}
+    <div class="row g-4">
+        <div class="col-lg-8" data-aos="fade-up">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <form method="post" action="{% url 'shop:update_cart' %}">
+                        {% csrf_token %}
+                        {% for item in items %}
+                        <div class="cart-item d-flex justify-content-between align-items-center py-3 {% if not forloop.last %}border-bottom{% endif %}">
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ item.item_name }}</h6>
+                                <small class="text-muted">{{ item.variant_name }} — {{ CURRENCY }}{{ item.price }} each</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="number" name="qty_{{ item.key }}" value="{{ item.quantity }}" min="0" class="form-control form-control-sm qty-input">
+                                <span class="fw-bold">{{ CURRENCY }}{{ item.subtotal }}</span>
+                                <a href="{% url 'shop:remove_from_cart' item.key %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-outline-secondary btn-sm mt-3">Update Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card shadow-sm border-0 checkout-summary">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Order Summary</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Total</span>
+                        <span class="fw-bold fs-4 text-weffle">{{ CURRENCY }}{{ total }}</span>
+                    </div>
+                    <a href="{% url 'shop:checkout' %}" class="btn btn-weffle w-100 py-2">Proceed to Checkout</a>
+                    <a href="{% url 'shop:menu' %}" class="btn btn-link w-100 mt-2">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5" data-aos="fade-up">
+        <div class="display-1">🛒</div>
+        <h4 class="text-muted">Your cart is empty</h4>
+        <a href="{% url 'shop:menu' %}" class="btn btn-weffle mt-3">Browse Menu</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

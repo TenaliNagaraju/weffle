@@ -1,0 +1,27 @@
+{% extends 'shop/base.html' %}
+{% block title %}Contact Admin — {{ SITE_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6" data-aos="fade-up">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold"><i class="bi bi-chat-dots"></i> Send a Query to Admin</div>
+                <div class="card-body p-4">
+                    <p class="text-muted small">Questions about taste, delivery delay, or anything else? Admin will respond directly.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-weffle">Send Query</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

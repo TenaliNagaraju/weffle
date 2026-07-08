@@ -1,0 +1,54 @@
+{% extends 'shop/base.html' %}
+{% block title %}Admin — {{ SITE_NAME }}{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-dark admin-nav fixed-top">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold" href="{% url 'shop:admin_dashboard' %}">🧇 {{ SITE_NAME }} Admin</a>
+        <div class="d-flex align-items-center gap-3">
+            <span id="admin-alert-badge" class="badge bg-danger d-none">New!</span>
+            <a href="{% url 'shop:logout' %}" class="btn btn-sm btn-outline-light">Logout</a>
+        </div>
+    </div>
+</nav>
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <ul class="nav flex-column">
+            <li><a href="{% url 'shop:admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="{% url 'shop:admin_orders' %}" class="{% if 'admin_order' in request.resolver_match.url_name %}active{% endif %}"><i class="bi bi-receipt"></i> Orders</a></li>
+            <li><a href="{% url 'shop:admin_menu' %}" class="{% if 'admin_menu' in request.resolver_match.url_name or 'admin_variant' in request.resolver_match.url_name %}active{% endif %}"><i class="bi bi-grid"></i> Menu</a></li>
+            <li><a href="{% url 'shop:admin_customers' %}" class="{% if request.resolver_match.url_name == 'admin_customers' %}active{% endif %}"><i class="bi bi-people"></i> Customers</a></li>
+            <li><a href="{% url 'shop:admin_queries' %}" class="{% if 'admin_query' in request.resolver_match.url_name %}active{% endif %}"><i class="bi bi-chat-dots"></i> Queries</a></li>
+            <li><a href="{% url 'shop:admin_analytics' %}" class="{% if request.resolver_match.url_name == 'admin_analytics' %}active{% endif %}"><i class="bi bi-bar-chart"></i> Analytics</a></li>
+            <li><a href="{% url 'shop:admin_delivery_agents' %}" class="{% if 'admin_delivery' in request.resolver_match.url_name %}active{% endif %}"><i class="bi bi-truck"></i> Delivery</a></li>
+            <li><a href="{% url 'shop:admin_settings' %}" class="{% if request.resolver_match.url_name == 'admin_settings' %}active{% endif %}"><i class="bi bi-gear"></i> Settings</a></li>
+        </ul>
+    </aside>
+    <main class="admin-main">
+        {% block admin_content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}
+
+{% block main_class %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block extra_js %}
+<script>
+setInterval(async () => {
+    try {
+        const r = await fetch('{% url "shop:admin_orders_api" %}');
+        const d = await r.json();
+        const badge = document.getElementById('admin-alert-badge');
+        if (d.new_orders > 0 || d.open_queries > 0) {
+            badge.classList.remove('d-none');
+            badge.textContent = `${d.new_orders} orders, ${d.open_queries} queries`;
+        } else {
+            badge.classList.add('d-none');
+        }
+    } catch(e) {}
+}, 10000);
+</script>
+{% block admin_js %}{% endblock %}
+{% endblock %}

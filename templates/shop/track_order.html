@@ -1,0 +1,70 @@
+{% extends 'shop/base.html' %}
+{% block title %}Track Order — {{ SITE_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <h1 class="fw-bold mb-2" data-aos="fade-up">Track Order {{ order.order_number }}</h1>
+    <span class="badge status-{{ order.status }} mb-4">{{ order.get_status_display }}</span>
+
+    <div class="row g-4">
+        <div class="col-lg-8" data-aos="fade-up">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div id="map" style="height:400px;border-radius:12px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card shadow-sm border-0 mb-3">
+                <div class="card-header bg-white fw-bold">Delivery Status</div>
+                <div class="card-body">
+                    <ul class="timeline">
+                        <li class="{% if order.status_progress >= 1 %}active{% endif %}">Order Placed</li>
+                        <li class="{% if order.status_progress >= 2 %}active{% endif %}">Confirmed</li>
+                        <li class="{% if order.status_progress >= 3 %}active{% endif %}">Preparing</li>
+                        <li class="{% if order.status_progress >= 4 %}active{% endif %}">Ready</li>
+                        <li class="{% if order.status_progress >= 5 %}active{% endif %}">Out for Delivery</li>
+                        <li class="{% if order.status_progress >= 6 %}active{% endif %}">Delivered</li>
+                    </ul>
+                </div>
+            </div>
+            {% if order.delivery_agent %}
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">Delivery Agent</div>
+                <div class="card-body">
+                    <p class="mb-1 fw-medium">{{ order.delivery_agent.get_full_name|default:order.delivery_agent.username }}</p>
+                    {% if agent %}<p class="text-muted mb-0"><i class="bi bi-telephone"></i> {{ agent.phone }}</p>{% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let dest = null;
+const map = L.map('map').setView([28.6139, 77.2090], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+{% if order.delivery_lat and order.delivery_lng %}
+dest = [{{ order.delivery_lat }}, {{ order.delivery_lng }}];
+L.marker(dest).addTo(map).bindPopup('Delivery Address').openPopup();
+map.setView(dest, 14);
+{% endif %}
+
+{% if agent and agent.current_lat and agent.current_lng %}
+const agentPos = [{{ agent.current_lat }}, {{ agent.current_lng }}];
+L.marker(agentPos, {icon: L.divIcon({html:'🛵',className:'agent-marker'})}).addTo(map).bindPopup('Delivery Agent');
+if (dest) { L.polyline([agentPos, dest], {color:'#e67e22',dashArray:'5,10'}).addTo(map); }
+{% endif %}
+</script>
+{% endblock %}
