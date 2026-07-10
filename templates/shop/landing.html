@@ -1,72 +1,354 @@
 {% extends 'shop/base.html' %}
-{% block title %}Welcome — {{ SITE_NAME }}{% endblock %}
+{% block title %}Welcome — Waffles Whiz{% endblock %}
 {% block body_class %}landing-page{% endblock %}
 {% block navbar %}{% endblock %}
-
 {% block content %}
-<section class="hero-section d-flex align-items-center min-vh-100">
-    <div class="hero-bg"></div>
-    <div class="container position-relative z-1">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap');
+
+body.landing-page {
+    --ww-batter: #FFF3DD;
+    --ww-toasted: #5C3A21;
+    --ww-crust: #E3A857;
+    --ww-butter: #FFD966;
+    --ww-syrup: #B5651D;
+    --ww-cocoa: #3B2412;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+body.landing-page .ww-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--ww-cocoa);
+    background-image:
+        radial-gradient(circle at 12% 12%, rgba(227,168,87,0.14) 0, transparent 8%),
+        radial-gradient(circle at 12% 12%, rgba(227,168,87,0.14) 0, transparent 8%);
+    background-size: 46px 46px;
+    background-position: 0 0, 23px 23px;
+}
+body.landing-page .ww-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ww-butter);
+    color: var(--ww-cocoa);
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 8px 18px;
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+}
+body.landing-page .ww-hero-badge::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -150%;
+    width: 60%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.65), transparent);
+    animation: wwShimmer 2.6s ease-in-out infinite;
+}
+@keyframes wwShimmer { 0% { left: -150%; } 60%, 100% { left: 150%; } }
+
+body.landing-page .ww-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.6rem, 5.5vw, 4.4rem);
+    color: #fff;
+    line-height: 1.05;
+    margin: 1rem 0 0.75rem;
+}
+body.landing-page .ww-title span {
+    color: var(--ww-crust);
+    position: relative;
+    display: inline-block;
+}
+body.landing-page .ww-drizzle-underline {
+    display: block;
+    width: 260px;
+    max-width: 100%;
+    height: 22px;
+    margin-top: 4px;
+}
+body.landing-page .ww-drizzle-underline path {
+    stroke: var(--ww-crust);
+    stroke-width: 5;
+    stroke-linecap: round;
+    fill: none;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: wwDraw 1.6s ease-out 0.4s forwards;
+}
+@keyframes wwDraw { to { stroke-dashoffset: 0; } }
+
+body.landing-page .ww-lead {
+    color: rgba(255,255,255,0.85);
+    font-size: 1.15rem;
+    max-width: 520px;
+    margin: 1.25rem 0 2rem;
+    animation: wwRise 0.9s ease-out 0.15s both;
+}
+@keyframes wwRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+body.landing-page .ww-btn {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 800;
+    padding: 0.85rem 1.75rem;
+    border-radius: 999px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: transform 0.25s cubic-bezier(.2,.9,.3,1.4), box-shadow 0.25s ease;
+}
+body.landing-page .ww-btn-primary { background: var(--ww-syrup); color: #fff; }
+body.landing-page .ww-btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.6); }
+body.landing-page .ww-btn:hover { transform: translateY(-3px) scale(1.035); box-shadow: 0 10px 24px -8px rgba(0,0,0,0.4); }
+body.landing-page .ww-btn:active { transform: translateY(0) scale(0.98); }
+body.landing-page .ww-btn-primary svg { transition: transform 0.25s ease; }
+body.landing-page .ww-btn-primary:hover svg { transform: translateX(5px); }
+
+body.landing-page .ww-hero-art { position: relative; text-align: center; }
+body.landing-page .ww-waffle-graphic { width: min(340px, 80%); animation: wwFloat 4.5s ease-in-out infinite; filter: drop-shadow(0 18px 20px rgba(0,0,0,0.35)); }
+@keyframes wwFloat {
+    0%   { transform: translateY(0) rotate(-2deg); }
+    50%  { transform: translateY(-16px) rotate(1.5deg); }
+    100% { transform: translateY(0) rotate(-2deg); }
+}
+body.landing-page .ww-steam { animation: wwSteam 3s ease-in-out infinite; transform-origin: bottom; opacity: 0.55; }
+body.landing-page .ww-steam:nth-child(2) { animation-delay: 0.5s; }
+@keyframes wwSteam {
+    0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.55; }
+    50% { transform: translateY(-10px) scaleY(1.15); opacity: 0.15; }
+}
+body.landing-page .ww-price-pill {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 1.25rem;
+    background: var(--ww-batter);
+    color: var(--ww-cocoa);
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+body.landing-page .ww-price-pill strong { font-family: 'JetBrains Mono', monospace; font-size: 1.15rem; color: var(--ww-syrup); }
+
+body.landing-page .ww-drizzle-divider { width: 100%; height: 26px; display: block; margin: 0 auto; }
+body.landing-page .ww-drizzle-divider path {
+    stroke: var(--ww-syrup);
+    stroke-width: 4;
+    stroke-linecap: round;
+    fill: none;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    transition: stroke-dashoffset 1.4s ease-out;
+}
+body.landing-page .ww-drizzle-divider.in-view path { stroke-dashoffset: 0; }
+
+body.landing-page .ww-section { padding: 4.5rem 0; }
+body.landing-page .ww-section-alt { background: var(--ww-batter); }
+body.landing-page .ww-section-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    color: var(--ww-toasted);
+    text-align: center;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    margin-bottom: 3rem;
+}
+
+body.landing-page .ww-feature-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    height: 100%;
+    border: 1px solid rgba(92,58,33,0.08);
+    transition: transform 0.35s cubic-bezier(.2,.9,.3,1.3), box-shadow 0.35s ease;
+}
+body.landing-page .ww-feature-card:hover { transform: translateY(-10px); box-shadow: 0 20px 35px -15px rgba(92,58,33,0.25); }
+body.landing-page .ww-feature-icon {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: var(--ww-batter);
+    color: var(--ww-syrup);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+    transition: transform 0.4s cubic-bezier(.2,.9,.3,1.5);
+}
+body.landing-page .ww-feature-card:hover .ww-feature-icon { transform: scale(1.2) rotate(-8deg); }
+body.landing-page .ww-feature-card h5 { font-family: 'Fredoka', sans-serif; color: var(--ww-toasted); font-weight: 600; }
+body.landing-page .ww-feature-card p { color: #7a6a5a; margin: 0; font-size: 0.95rem; }
+
+body.landing-page .ww-menu-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 100%;
+    border: 1px solid rgba(92,58,33,0.08);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+body.landing-page .ww-menu-card:hover { transform: translateY(-8px); box-shadow: 0 22px 40px -18px rgba(92,58,33,0.3); }
+body.landing-page .ww-menu-card-img {
+    background: var(--ww-batter);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem 0;
+}
+body.landing-page .ww-menu-card-img svg { width: 72px; transition: transform 0.5s cubic-bezier(.2,.9,.3,1.4); }
+body.landing-page .ww-menu-card:hover .ww-menu-card-img svg { transform: scale(1.12) rotate(6deg); }
+body.landing-page .ww-menu-card-body { padding: 1.25rem 1.5rem; }
+body.landing-page .ww-menu-card-body h5 { font-family: 'Fredoka', sans-serif; color: var(--ww-toasted); font-weight: 600; }
+body.landing-page .ww-menu-card-body p { color: #7a6a5a; font-size: 0.9rem; }
+body.landing-page .ww-price-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--ww-syrup);
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-top: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.landing-page .ww-hero-badge::after,
+    body.landing-page .ww-drizzle-underline path,
+    body.landing-page .ww-lead,
+    body.landing-page .ww-waffle-graphic,
+    body.landing-page .ww-steam,
+    body.landing-page .ww-feature-icon,
+    body.landing-page .ww-drizzle-divider path {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
+
+<section class="ww-hero">
+    <div class="container position-relative">
         <div class="row align-items-center">
-            <div class="col-lg-7 text-white" data-aos="fade-right">
-                <span class="badge bg-warning text-dark mb-3 px-3 py-2">Fresh & Hot Daily</span>
-                <h1 class="display-3 fw-bold mb-3">Waffles Whizz<br><span class="text-warning">Made With Love</span></h1>
-                <p class="lead mb-4 opacity-90">Order your favorite flavors — Dark Fantasy, Lotus Biscoff, Triple Chocolate & more. Delivered hot to your door.</p>
+            <div class="col-lg-7" data-aos="fade-right">
+                <span class="ww-hero-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2C9 6 7 9 7 13a5 5 0 0 0 10 0c0-4-2-7-5-11z" fill="currentColor"/></svg>
+                    Fresh & hot daily
+                </span>
+                <h1 class="ww-title">
+                    Waffles Whiz<br>
+                    <span>
+                        Made with love
+                        <svg class="ww-drizzle-underline" viewBox="0 0 260 22" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 12 Q 30 2, 55 12 T 105 12 T 155 12 T 205 12 T 256 12" />
+                        </svg>
+                    </span>
+                </h1>
+                <p class="ww-lead">Order your favorite flavors — Dark Fantasy, Lotus Biscoff, Triple Chocolate & more. Delivered hot to your door.</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="{% url 'shop:register' %}" class="btn btn-weffle btn-lg px-4">Get Started <i class="bi bi-arrow-right"></i></a>
-                    <a href="{% url 'shop:login' %}" class="btn btn-outline-light btn-lg px-4">Login</a>
+                    <a href="{% url 'shop:register' %}" class="ww-btn ww-btn-primary">
+                        Get started
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                    <a href="{% url 'shop:login' %}" class="ww-btn ww-btn-outline">Login</a>
                 </div>
             </div>
-            <div class="col-lg-5 text-center mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
-                <div class="hero-waffle float-animation">🧇</div>
-                <p class="text-white mt-3 fw-semibold">Starting at {{ CURRENCY }}39</p>
+            <div class="col-lg-5 ww-hero-art mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
+                <svg class="ww-waffle-graphic" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <g class="ww-steam">
+                        <path d="M110 50 Q100 35 112 20" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    </g>
+                    <g class="ww-steam">
+                        <path d="M160 45 Q150 30 162 15" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+                    </g>
+                    <rect x="40" y="70" width="220" height="180" rx="24" fill="#E3A857"/>
+                    <rect x="40" y="70" width="220" height="180" rx="24" fill="none" stroke="#B5651D" stroke-width="4"/>
+                    {% for row in "1234"|make_list %}
+                    <g>
+                    </g>
+                    {% endfor %}
+                    <g fill="#B5651D" opacity="0.35">
+                        <circle cx="75" cy="105" r="8"/><circle cx="115" cy="105" r="8"/><circle cx="155" cy="105" r="8"/><circle cx="195" cy="105" r="8"/><circle cx="225" cy="105" r="8"/>
+                        <circle cx="75" cy="145" r="8"/><circle cx="115" cy="145" r="8"/><circle cx="155" cy="145" r="8"/><circle cx="195" cy="145" r="8"/><circle cx="225" cy="145" r="8"/>
+                        <circle cx="75" cy="185" r="8"/><circle cx="115" cy="185" r="8"/><circle cx="155" cy="185" r="8"/><circle cx="195" cy="185" r="8"/><circle cx="225" cy="185" r="8"/>
+                        <circle cx="75" cy="220" r="8"/><circle cx="115" cy="220" r="8"/><circle cx="155" cy="220" r="8"/><circle cx="195" cy="220" r="8"/><circle cx="225" cy="220" r="8"/>
+                    </g>
+                    <rect x="120" y="55" width="60" height="34" rx="6" fill="#FFD966"/>
+                    <path d="M80 90 Q120 130 90 170 Q140 190 150 230 Q170 200 220 220" stroke="#B5651D" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.85"/>
+                </svg>
+                <div class="ww-price-pill">Starting at <strong>{{ CURRENCY }}39</strong></div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5 bg-light">
+<svg class="ww-drizzle-divider" viewBox="0 0 1000 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 13 Q 60 2, 120 13 T 240 13 T 360 13 T 480 13 T 600 13 T 720 13 T 840 13 T 960 13 T 1080 13" />
+</svg>
+
+<section class="ww-section ww-section-alt">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5" data-aos="fade-up">Why Choose {{ SITE_NAME }}?</h2>
+        <h2 class="ww-section-title" data-aos="fade-up">Why choose Waffles Whiz?</h2>
         <div class="row g-4">
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="feature-card text-center p-4 h-100">
-                    <div class="feature-icon">⚡</div>
-                    <h5>Real-Time Tracking</h5>
-                    <p class="text-muted mb-0">Track your order from kitchen to doorstep with live updates.</p>
+                <div class="ww-feature-card">
+                    <div class="ww-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2 3 14h8l-1 8 11-14h-9l1-6z" fill="currentColor"/></svg>
+                    </div>
+                    <h5>Real-time tracking</h5>
+                    <p>Track your order from kitchen to doorstep with live updates.</p>
                 </div>
             </div>
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="feature-card text-center p-4 h-100">
-                    <div class="feature-icon">🎯</div>
-                    <h5>16+ Flavors</h5>
-                    <p class="text-muted mb-0">Square Puff, Stick, Triangle — pick your perfect shape.</p>
+                <div class="ww-feature-card">
+                    <div class="ww-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <h5>16+ flavors</h5>
+                    <p>Square puff, stick, triangle — pick your perfect shape.</p>
                 </div>
             </div>
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="feature-card text-center p-4 h-100">
-                    <div class="feature-icon">🔒</div>
-                    <h5>Secure Ordering</h5>
-                    <p class="text-muted mb-0">Your data is protected with industry-standard security.</p>
+                <div class="ww-feature-card">
+                    <div class="ww-feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <h5>Secure ordering</h5>
+                    <p>Your data is protected with industry-standard security.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<svg class="ww-drizzle-divider" viewBox="0 0 1000 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 13 Q 60 24, 120 13 T 240 13 T 360 13 T 480 13 T 600 13 T 720 13 T 840 13 T 960 13 T 1080 13" />
+</svg>
+
 {% if featured %}
-<section class="py-5">
+<section class="ww-section">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5" data-aos="fade-up">Popular Picks</h2>
+        <h2 class="ww-section-title" data-aos="fade-up">Popular picks</h2>
         <div class="row g-4">
             {% for item in featured %}
             <div class="col-md-4" data-aos="fade-up">
-                <div class="menu-card h-100">
-                    <div class="menu-card-img">🧇</div>
-                    <div class="menu-card-body">
+                <div class="ww-menu-card">
+                    <div class="ww-menu-card-img">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="80" height="80" rx="14" fill="#E3A857"/>
+                            <g fill="#B5651D" opacity="0.4">
+                                <circle cx="28" cy="28" r="5"/><circle cx="50" cy="28" r="5"/><circle cx="72" cy="28" r="5"/>
+                                <circle cx="28" cy="50" r="5"/><circle cx="50" cy="50" r="5"/><circle cx="72" cy="50" r="5"/>
+                                <circle cx="28" cy="72" r="5"/><circle cx="50" cy="72" r="5"/><circle cx="72" cy="72" r="5"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="ww-menu-card-body">
                         <h5>{{ item.name }}</h5>
-                        <p class="text-muted small">{{ item.description|default:"Delicious weffle" }}</p>
-                        {% if item.min_price %}<span class="price-tag">From {{ CURRENCY }}{{ item.min_price }}</span>{% endif %}
+                        <p>{{ item.description|default:"Delicious weffle" }}</p>
+                        {% if item.min_price %}<span class="ww-price-tag">From {{ CURRENCY }}{{ item.min_price }}</span>{% endif %}
                     </div>
                 </div>
             </div>
@@ -75,4 +357,18 @@
     </div>
 </section>
 {% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var dividers = document.querySelectorAll('.ww-drizzle-divider');
+    if ('IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) entry.target.classList.add('in-view');
+            });
+        }, { threshold: 0.4 });
+        dividers.forEach(function (d) { obs.observe(d); });
+    }
+});
+</script>
 {% endblock %}
